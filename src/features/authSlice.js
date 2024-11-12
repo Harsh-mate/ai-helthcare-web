@@ -1,4 +1,3 @@
-// src/features/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from '../services/authService'; // Assuming you have an auth service
 
@@ -17,6 +16,7 @@ const authSlice = createSlice({
     user: null,
     token: null,
     role: null,
+    isAuthenticated: false, // Add this property
     loading: false,
     error: null,
   },
@@ -25,6 +25,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.role = null;
+      state.isAuthenticated = false; // Set to false on logout
     },
   },
   extraReducers: (builder) => {
@@ -37,11 +38,13 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.role = action.payload.role;
+        state.isAuthenticated = true; // Set to true on successful login
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
+        state.isAuthenticated = false; // Ensure this is false on failed login
       });
   },
 });
